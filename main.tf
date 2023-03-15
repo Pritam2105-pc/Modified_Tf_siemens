@@ -4,12 +4,11 @@ provider "aws" {
 
 # Add your S3 backend configuration here
 
-
 terraform {
   backend "s3" {
     bucket = "3.devops.candidate.exam"
     region = "eu-west-1"
-    key = Pritam Chaudhari
+    key = "Pritam Chaudhari"
   }
 }
 
@@ -20,7 +19,7 @@ resource "aws_vpc" "vpc" {
     Name = "VPC"
   }
 }
-resource "aws_subnet" "main" {
+resource "aws_subnet" "public" {
   vpc_id     = data.aws_vpc.vpc.id
   cidr_block = "10.0.1.0/24"
   nat_gateway = data.aws_nat_gateway.nat.id
@@ -29,7 +28,7 @@ resource "aws_subnet" "main" {
   }
 }
 
-resource "aws_subnet" "main" {
+resource "aws_subnet" "private" {
   vpc_id     = data.aws_vpc.vpc.id
   cidr_block = "10.0.2.0/24"
   nat_gateway = data.aws_nat_gateway.nat.id
@@ -43,7 +42,6 @@ resource "aws_route_table" "example" {
 
   route {
     cidr_block = "10.0.1.0/24"
-    gateway_id = aws_internet_gateway.example.id
   }
 
   tags = {
@@ -87,8 +85,6 @@ payload = {
 }
 
 resource "aws_lambda_function" "test_lambda" {
-  # If the file is not in the current working directory you will need to include a
-  # path.module in the filename.
   filename      = "lambda_function_payload.zip"
   function_name = "lambda_function_name"
   role          = aws_iam_role.iam_for_lambda.arn
@@ -96,26 +92,10 @@ resource "aws_lambda_function" "test_lambda" {
 
   source_code_hash = data.archive_file.lambda.output_base64sha256
 
-  runtime = "nodejs16.x"
+  runtime = "python3.9"
 
-  environment {
-    variables = {
-      foo = "bar"
-    }
-  }
+ 
 }
 
 
-
-data "aws_nat_gateway" "nat" {
-  id = "nat-07863fc48f5b99110"
-}
-
-data "aws_vpc" "vpc" {
-  id = "vpc-0de2bfe0f5fc540e0"
-}
-
-data "aws_iam_role" "lambda" {
-  name = "DevOps-Candidate-Lambda-Role"
-}
 
