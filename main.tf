@@ -25,7 +25,16 @@ resource "aws_subnet" "main" {
   cidr_block = "10.0.1.0/24"
   nat_gateway = data.aws_nat_gateway.nat.id
   tags = {
-    Name = "Subnet"
+    Name = "Public Subnet"
+  }
+}
+
+resource "aws_subnet" "main" {
+  vpc_id     = data.aws_vpc.vpc.id
+  cidr_block = "10.0.2.0/24"
+  nat_gateway = data.aws_nat_gateway.nat.id
+  tags = {
+    Name = "Private Subnet"
   }
 }
 
@@ -35,6 +44,18 @@ resource "aws_route_table" "example" {
   route {
     cidr_block = "10.0.1.0/24"
     gateway_id = aws_internet_gateway.example.id
+  }
+
+  tags = {
+    Name = "Public-RT"
+  }
+}
+resource "aws_route_table" "example" {
+  vpc_id = data.aws_vpc.vpc.id
+
+  route {
+    cidr_block = "10.0.2.0/24"
+    nat_gateway = data.aws_nat_gateway.nat.id
   }
 
   tags = {
@@ -48,6 +69,41 @@ resource "aws_route_table_association" "a" {
 }
 
 
+
+resource "aws_iam_role" "iam_for_lambda" {
+  aws_iam_role = data.aws_iam_role.lambda.json
+}
+
+data "archive_file" "lambda" {
+  type        = "zip"
+  source_file = "lambda.js"
+  output_path = "lambda_function_payload.zip"
+}
+
+payload = {
+  "subnet_id": "",
+  "name": "<Your Full Name>",
+  "email": "<Your Email Address>"
+}
+
+resource "aws_lambda_function" "test_lambda" {
+  # If the file is not in the current working directory you will need to include a
+  # path.module in the filename.
+  filename      = "lambda_function_payload.zip"
+  function_name = "lambda_function_name"
+  role          = aws_iam_role.iam_for_lambda.arn
+  handler       = "index.test"
+
+  source_code_hash = data.archive_file.lambda.output_base64sha256
+
+  runtime = "nodejs16.x"
+
+  environment {
+    variables = {
+      foo = "bar"
+    }
+  }
+}
 
 
 
