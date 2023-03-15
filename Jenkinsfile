@@ -1,7 +1,6 @@
 pipeline{
     agent any
     stages{
-       }
         stage("TF Init"){
             steps{
                 echo "Executing Terraform Init"
