@@ -1,6 +1,11 @@
 pipeline{
     agent any
     stages{
+        stage("Terraform Installation"){
+            steps{
+                sh 'sudo yum install terraform'
+            }
+        }
         stage("TF Init"){
             steps{
                 echo "Executing Terraform Init"
