@@ -1,11 +1,20 @@
 pipeline{
     agent any
     stages{
+        stage("Yum install Git")
+            steps{
+                script{
+                    sh "sudo yum install git -y"
+                }
+            }
         stage("Terraform Installation"){
             steps{
-                sh "sudo yum install -y yum-utils"
-                sh "sudo yum-config-manager --add-repo https://rpm.releases.hashicorp.com/RHEL/hashicorp.repo"
-                sh "sudo yum -y install terraform"
+                script{
+                    sh "sudo yum install -y yum-utils"
+                    sh "sudo yum-config-manager --add-repo https://rpm.releases.hashicorp.com/RHEL/hashicorp.repo"
+                    sh "sudo yum -y install terraform"
+                }
+                
             }
         }
         stage("TF Init"){
