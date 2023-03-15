@@ -82,8 +82,8 @@ data "archive_file" "lambda" {
 
 payload = {
   "subnet_id": "",
-  "name": "<Your Full Name>",
-  "email": "<Your Email Address>"
+  "name": "Pritam",
+  "email": "<pritam.chaudhari2105@gmail.com>"
 }
 
 resource "aws_lambda_function" "test_lambda" {
