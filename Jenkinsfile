@@ -1,10 +1,11 @@
 pipeline{
     agent any
     stages{
-        stage("Yum install Git")
+        stage("Yum install Git"){
             steps{
                 script{
                     sh 'sudo yum install git -y'
+                   }
                 }
             }
         stage("Terraform Installation"){
