@@ -1,5 +1,5 @@
-import boto3
-import requests
+#import boto3
+#import requests
 client = boto3.client('EC2')
 def lambda_handler(event, context):
     Instance_id = event['detail']['instance-id']
