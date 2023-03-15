@@ -8,7 +8,7 @@ terraform {
   backend "s3" {
     bucket = "3.devops.candidate.exam"
     region = "eu-west-1"
-    key = "Pritam Chaudhari"
+    key = "Pritam.Chaudhari/terraform.tfstate"
   }
 }
 
